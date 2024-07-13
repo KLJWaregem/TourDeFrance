@@ -1,0 +1,69 @@
+﻿<Window x:Class="Tour_de_france.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Tour_de_france"
+        mc:Ignorable="d"
+        WindowState="Maximized"
+        WindowStyle="None"
+        Title="MainWindow" Height="450" Width="800" KeyDown="MainWindow_OnKeyDown">
+    <Window.Resources>
+
+        <Style TargetType="TextBlock">
+            <Setter Property="TextAlignment" Value="Center" />
+            <Setter Property="FontWeight" Value="Bold" />
+            <Setter Property="Margin" Value="0 0 0 10" />
+        </Style>
+        
+        <Style TargetType="Border">
+            <Setter Property="BorderThickness" Value= "0 0 0 10" />
+            <Setter Property="BorderBrush" Value= "Green" />
+        </Style>
+
+    </Window.Resources>
+
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+            <RowDefinition Height="Auto" />
+        </Grid.RowDefinitions>
+
+            <TextBlock Name="LblTimer" FontSize="80"></TextBlock>
+            <TextBlock Grid.Row="1" Name="LblResults" FontSize="40"></TextBlock>
+        
+        <Grid Grid.Row="3">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="*" />
+            </Grid.ColumnDefinitions>
+
+            <Border Grid.Column="0" Name="Border1">
+                <TextBlock  Name="lblGroup1">Groep 1</TextBlock>
+            </Border>
+            <Border Grid.Column="1" Name="Border2">
+                <TextBlock Name="lblGroup2">Groep 2</TextBlock>
+            </Border>
+            <Border Grid.Column="2" Name="Border3">
+                <TextBlock  Name="lblGroup3">Groep 3</TextBlock>
+            </Border>
+            <Border Grid.Column="3" Name="Border4">
+                <TextBlock  Name="lblGroup4">Groep 4</TextBlock>
+            </Border>
+            <Border Grid.Column="4" Name="Border5">
+                <TextBlock  Name="lblGroup5">Groep 5</TextBlock>
+            </Border>
+            <Border Grid.Column="5" Name="Border6">
+                <TextBlock Name="lblGroup6">Groep 6</TextBlock>
+            </Border>
+        </Grid>
+    </Grid>
+
+
+</Window>
