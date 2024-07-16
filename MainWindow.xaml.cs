@@ -3,11 +3,13 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO.Ports;
 using System.Linq;
+using System.Threading;
 using System.Timers;
 using System.Windows;
 using System.Windows.Input;
 using System.Windows.Media;
 using Microsoft.Extensions.Configuration;
+using Timer = System.Timers.Timer;
 
 namespace Tour_de_france
 {
@@ -34,6 +36,7 @@ namespace Tour_de_france
                 };
                 _timer.Elapsed += TimerOnElapsed;
 
+
                 port.DataReceived += PortOnDataReceived;
                 port.Open();
             }
@@ -52,8 +55,39 @@ namespace Tour_de_france
 
 
             if (configuration is null) throw new Exception("Configuration is null");
+            SearchComPort searchComPort = new SearchComPort();
+            searchComPort.Show();
+            bool searchingForPort = true;
+            while (searchingForPort)
+            {
+                var portNames = SerialPort.GetPortNames();
+                foreach (var portName in portNames)
+                {
+                    try
+                    {
+                        port = new SerialPort(portName, 9600);
+                        port.ReadTimeout = 3000;
+                        port.Open();
+                        port.WriteLine("Who Are You?");
+                        var response = port.ReadLine();
+                        if (response == "It is me!\r")
+                        {
+                            searchingForPort = true;
+                            break;
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                    }
+                    finally
+                    {
+                        if (port.IsOpen)
+                            port.Close();
+                    }
+                }
+            }
 
-            port = new SerialPort(configuration["ComPort"]!, 9600);
+            searchComPort.Close();
 
             groupNames.Add('1', configuration["Names:1"]!);
             groupNames.Add('2', configuration["Names:2"]!);
@@ -111,7 +145,7 @@ namespace Tour_de_france
         {
             port.ReadLine().ToArray().Where(char.IsDigit).ToList().ForEach(input =>
             {
-                if (recordedTimes.TryAdd(input, Stopwatch.Elapsed))
+                if (Stopwatch.IsRunning && recordedTimes.TryAdd(input, Stopwatch.Elapsed))
                 {
                     PrintTimes();
                     if (recordedTimes.Count == 6)
@@ -170,15 +204,19 @@ namespace Tour_de_france
                 port.Close();
                 Application.Current.Shutdown();
             }
-
-            if (e.Key != Key.Space) return;
-
-            _timer.Enabled = true;
-
-            recordedTimes.Clear();
-            PrintTimes();
-            SetBorder(Colors.Red);
-            Stopwatch.Restart();
+            else if (e.Key == Key.Space)
+            {
+                _timer.Enabled = true;
+                recordedTimes.Clear();
+                PrintTimes();
+                SetBorder(Colors.Red);
+                Stopwatch.Restart();
+            }
+            else if (e.Key == Key.Enter && !Stopwatch.IsRunning)
+            {
+                recordedTimes.Clear();
+                PrintTimes();
+            }
         }
 
         private void SetBorder(Color color, int group = 0)
